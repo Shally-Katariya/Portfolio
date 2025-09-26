@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SHALLY KATARIYA — Portfolio</title>
+<meta name="description" content="Portfolio of SHALLY KATARIYA — Projects, resume & contact" />
+<style>
+  :root{
+    --bg:#0f1724; --card:#0b1220; --accent:#06b6d4; --muted:#94a3b8;
+    --glass: rgba(255,255,255,0.02);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,var(--bg),#071023);color:#e6eef6;line-height:1.45}
+  .wrap{max-width:980px;margin:40px auto;padding:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;box-shadow:0 6px 30px rgba(2,6,23,0.6);backdrop-filter:blur(6px)}
+  header{display:flex;gap:20px;align-items:center}
+  .avatar{width:84px;height:84px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700;color:#02101a;font-size:28px}
+  h1{margin:0;font-size:22px}
+  p.lead{color:var(--muted);margin:6px 0 18px}
+  .hero-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .buttons{display:flex;gap:10px;margin-top:6px}
+  .btn{padding:8px 12px;border-radius:8px;background:var(--accent);color:#02101a;text-decoration:none;font-weight:600}
+  .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 12px;border-radius:8px;text-decoration:none}
+  .grid{display:grid;grid-template-columns:1fr 320px;gap:20px;margin-top:18px}
+  .card{background:var(--card);padding:16px;border-radius:10px}
+  h2{margin:0 0 10px;font-size:16px}
+  .projects .proj{display:block;padding:12px;border-radius:8px;background:var(--glass);margin-bottom:10px;text-decoration:none;color:inherit}
+  .proj h3{margin:0;font-size:15px}
+  .proj p{margin:6px 0 0;color:var(--muted);font-size:13px}
+  .skills{display:flex;flex-wrap:wrap;gap:8px}
+  .skill{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:6px;font-size:13px;color:var(--muted)}
+  footer{margin-top:18px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media(max-width:880px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero-row">
+    <div style="display:flex;gap:14px;align-items:center">
+      <div class="avatar">SK</div>
+      <div>
+        <h1>SHALLY KATARIYA</h1>
+        <div style="display:flex;align-items:center;gap:8px">
+          <p class="lead">AI enthusiast & software engineer — building useful tools and clean UI. Open to internships & remote roles.</p>
+        </div>
+        <div class="buttons">
+          <a class="btn" href="#projects">See Projects</a>
+          <a class="ghost" href="mailto:sk1444@srmist.edu.in">sk1444@srmist.edu.in</a>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div style="color:var(--muted);font-size:13px">Location • India</div>
+      <div style="margin-top:10px">
+        <a class="ghost" href="https://github.com/Shally-Katariya" target="_blank">GitHub</a>
+        <a class="ghost" href="https://www.linkedin.com/in/shally-katariya-158323297/" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid">
+    <main>
+      <section id="projects" class="card projects">
+        <h2>Selected Projects</h2>
+
+        <a class="proj" href="https://github.com/Shally-Katariya" target="_blank">
+          <h3>Secure P2P Payment App</h3>
+          <p>Mini VisaNet clone: secure transfers, authentication, and React/Flask dashboard. (Tech: React, Flask, PostgreSQL)</p>
+        </a>
+
+        <a class="proj" href="https://github.com/Shally-Katariya" target="_blank">
+          <h3>Multilingual CTI Platform</h3>
+          <p>Extracting malicious IOCs from Telegram with XLM-RoBERTa. (Tech: Python, PyTorch, Flask)</p>
+        </a>
+
+        <a class="proj" href="https://github.com/Shally-Katariya" target="_blank">
+          <h3>Image Processing Tool</h3>
+          <p>Automated image annotation & preprocessing. (Tech: OpenCV, C++)</p>
+        </a>
+
+        <div style="margin-top:12px;color:var(--muted);font-size:13px">
+          Want more? View my <a href="https://github.com/Shally-Katariya" style="color:var(--accent)">GitHub</a>.
+        </div>
+      </section>
+
+      <section class="card" style="margin-top:14px">
+        <h2>About</h2>
+        <p style="color:var(--muted);margin-top:8px">I design ML systems and full-stack apps. I enjoy turning ideas into working prototypes, shipping fast, and writing clear docs.</p>
+        <div style="margin-top:10px">
+          <strong>Currently:</strong> open to internships & early-career roles.
+        </div>
+      </section>
+
+      <section class="card" style="margin-top:14px">
+        <h2>Contact</h2>
+        <p style="color:var(--muted);margin-top:8px">Email: <a href="mailto:sk1444@srmist.edu.in" style="color:var(--accent)">sk1444@srmist.edu.in</a></p>
+        <p style="color:var(--muted)">Phone: +91-9389521170</p>
+      </section>
+    </main>
+
+    <aside>
+      <div class="card">
+        <h2>Skills</h2>
+        <div class="skills" style="margin-top:8px">
+          <span class="skill">Python</span><span class="skill">React</span><span class="skill">Flask</span><span class="skill">C++</span>
+          <span class="skill">ML / PyTorch</span><span class="skill">SQL</span><span class="skill">Docker</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h2>Quick Links</h2>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <a class="ghost" href="https://github.com/Shally-Katariya">GitHub</a>
+          <a class="ghost" href="https://www.linkedin.com/in/shally-katariya-158323297/">LinkedIn</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <div>© <span id="year"></span> SHALLY KATARIYA</div>
+    <div style="color:var(--muted)">Built quickly — contact me for more details</div>
+  </footer>
+</div>
+
+<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+</body>
+</html>
