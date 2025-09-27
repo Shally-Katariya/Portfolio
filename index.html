@@ -1,292 +1,589 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shally Katariya | Software Engineer</title>
+    <title>Shally Katariya | 3D Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* =========================
-         Portfolio Visual Upgrade
-        ========================= */
-
-        /* 1) Color system + background */
-        :root {
-            --bg-900: #0a0f19;
-            --bg-800: #0f1724;
-            --muted: #94a3b8;      /* paragraph / secondary */
-            --text: #e6eef8;          /* headings / primary */
-            --accent-cyan: #06b6d4;      /* cyan */
-            --accent-purple: #7c3aed;    /* purple */
-            --accent-grad: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-            --card-bg: rgba(17, 28, 42, 0.82);
-            --glass-border: rgba(255, 255, 255, 0.04);
-            --btn-shadow: 0 6px 30px rgba(124, 58, 237, 0.12);
-        }
-
-        /* page background */
         body {
-            background: linear-gradient(145deg, var(--bg-900) 0%, var(--bg-800) 100%);
-            color: var(--text);
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            cursor: none;
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #e5e7eb;
+            overflow-x: hidden;
         }
 
-        #bg-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+        #bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
         }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-900); }
-        ::-webkit-scrollbar-thumb { background: #30446b; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #5372a7; }
-
-        /* Custom cursor */
-        .cursor-dot, .cursor-outline { position: fixed; z-index: 1000; pointer-events: none; border-radius: 50%; }
-        .cursor-dot { width: 8px; height: 8px; background-color: var(--accent-cyan); }
-        .cursor-outline { width: 40px; height: 40px; border: 2px solid var(--accent-cyan); transition: all 0.2s ease-out; }
-        a:hover ~ .cursor-outline, button:hover ~ .cursor-outline, [onclick]:hover ~ .cursor-outline { transform: scale(1.5); background-color: rgba(6, 182, 212, 0.2); }
-
-        /* ===== HERO ===== */
-        .hero { position: relative; z-index: 20; overflow: visible; }
-        .hero-pre { color: var(--accent-cyan); font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace; font-weight: 600; letter-spacing: 0.02em; margin-bottom: 0.6rem; }
-        .hero-name { font-weight: 800; font-size: clamp(40px, 7vw, 88px); line-height: 0.95; letter-spacing: -0.01em; margin: 0 0 0.25rem 0; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
-        .hero-headline { font-size: clamp(28px, 5vw, 44px); font-weight: 700; color: #dfe9f6; margin: 0 0 1rem 0; }
-        .hero-desc { color: var(--muted); font-size: 1.02rem; line-height: 1.7; max-width: 65ch; margin-top: 0.8rem; }
-
-        /* ===== BUTTONS ===== */
-        .btn-primary { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.65rem 1.05rem; border-radius: 10px; background: var(--accent-grad); color: #fff; font-weight: 700; text-decoration: none; box-shadow: var(--btn-shadow); border: none; transform: translateZ(0); transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms; }
-        .btn-primary:hover, .btn-primary:focus { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(124, 58, 237, 0.18); outline: none; }
+        .content-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            padding: 3rem 2rem; /* Increased padding */
+            max-width: 850px; /* Slightly wider */
+            margin: auto;
+        }
         
-        /* ===== PROJECT CARDS ===== */
-        .project-card { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--glass-border); padding: 1.35rem; transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms, border-color 180ms; will-change: transform; overflow: hidden; }
-        .project-title { font-size: 1.05rem; font-weight: 700; margin: 6px 0 8px 0; color: #e9f2ff; }
-        .project-meta { color: var(--accent-cyan); font-weight: 600; font-size: 0.88rem; margin-bottom: 8px; font-family: "Roboto Mono", ui-monospace; }
-        .project-card:hover { transform: translateY(-8px); box-shadow: 0 18px 40px rgba(6, 182, 212, 0.06), 0 6px 30px rgba(124, 58, 237, 0.06); border-color: rgba(124, 58, 237, 0.12); }
-        .project-card a { color: var(--accent-cyan); font-weight: 700; text-decoration: none; }
-        .project-card a:hover { text-decoration: underline; }
+        /* Frosted Glass Container for Content */
+        .content-container {
+            background-color: rgba(12, 12, 12, 0.6); /* Darker, more subtle */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* For Safari */
+            border: 1px solid rgba(255, 255, 255, 0.08); /* More subtle border */
+            border-radius: 1.5rem;
+            padding: 3rem; /* Increased padding */
+            width: 100%;
+        }
 
-        /* ===== TIMELINE / JOURNEY ===== */
-        .timeline { position: relative; }
-        .timeline-line { position: absolute; left: 6px; top: 8px; bottom: 8px; width: 3px; border-radius: 999px; background: linear-gradient(180deg, rgba(6, 182, 212, 0.14), rgba(124, 58, 237, 0.06)); }
-        .timeline-dot { width: 12px; height: 12px; border-radius: 999px; background: var(--accent-cyan); box-shadow: 0 8px 20px rgba(6, 182, 212, 0.06); position: absolute; left: 0; transform: translateX(-50%); }
-        .timeline-item { position: relative; padding-left: 2rem; margin-bottom: 2rem; }
-        .timeline-item:last-child { margin-bottom: 0; }
-        
-        /* ===== CONTACT ===== */
-        .contact { text-align: center; color: var(--muted); }
-        .contact h2 { color: var(--text); font-size: clamp(28px, 4.4vw, 44px); margin-bottom: 0.5rem; }
-        .contact p { max-width: 68ch; margin: 0 auto 1rem; color: var(--muted); line-height: 1.7; }
-        
-        /* ===== HELPERS & FLOATING ELEMENTS ===== */
-        .section-text, p, li { color: var(--muted); font-size: 1rem; line-height: 1.7; }
-        :focus { outline: none; box-shadow: 0 0 0 6px rgba(6, 182, 212, 0.06); }
-        
-        [data-animate] { opacity: 0; transform: translateY(30px); transition: opacity 0.6s cubic-bezier(0.645, 0.045, 0.355, 1), transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1); }
-        [data-animate].is-visible { opacity: 1; transform: translateY(0); }
-        
-        .side-element { position: fixed; bottom: 0; width: 40px; z-index: 50; display: none; }
-        @media (min-width: 1024px) { .side-element { display: block; } }
-        .side-element.left { left: 40px; }
-        .side-element.right { right: 40px; }
-        .side-element ul { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
-        .side-element a { writing-mode: vertical-rl; }
-        .side-element::after { content: ''; display: block; width: 1px; height: 90px; margin: 20px auto 0; background-color: var(--muted); }
+        /* Typography for cleaner design */
+        .section-heading {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: #f0f0f0; /* Near white for clean look */
+            text-shadow: none; /* Removed glow */
+        }
 
-        .tab-button.active { border-bottom-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .main-text {
+            color: #b0b0b0; /* Softer gray */
+            line-height: 1.8; /* Increased line height */
+            max-width: 700px;
+            text-align: left;
+        }
+        
+        /* Centered sections text alignment */
+        .text-center { text-align: center; }
+        .text-center .main-text { text-align: center; margin-left:auto; margin-right:auto; }
+        
+        /* Fade-in animation on scroll */
+        .content-section > .content-container, .hero-section > .hero-content {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.645, 0.045, 0.355, 1), transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        .content-section.is-visible > .content-container, .hero-section.is-visible > .hero-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tag {
+            background-color: rgba(59, 130, 246, 0.2); /* Softer background */
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            color: #d0d0d0;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .tag:hover {
+            transform: scale(1.05);
+            background-color: rgba(59, 130, 246, 0.4);
+        }
+
+        /* Tab Styles */
+        .tabs-container {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #2a2a2a; /* Lighter border */
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: #9ca3af;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #3b82f6; /* Clean blue */
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .tab-button.active {
+            color: #e5e7eb;
+        }
+        .tab-button.active::after {
+            transform: scaleX(1);
+        }
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+        
+        /* ===== HERO PHOTO + LAYOUT ===== */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr; /* Adjusted photo size */
+            gap: 64px; /* Increased gap */
+            align-items: center;
+            width: 100%;
+            max-width: 1100px;
+        }
+        .hero-photo-wrap {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            border-radius: 999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            transform-style: preserve-3d;
+            will-change: transform;
+            transition: transform 260ms cubic-bezier(.2,.9,.2,1);
+            z-index: 14;
+        }
+        .hero-photo-wrap::before{
+            content: "";
+            position: absolute;
+            inset: -6px; /* Tighter ring */
+            border-radius: 999px;
+            background: linear-gradient(90deg, #3b82f6, #67e8f9); /* Cleaner gradient */
+            filter: blur(16px);
+            opacity: 0.7;
+            z-index: -1;
+        }
+        .hero-photo {
+            width: 100%; /* Full size */
+            height: 100%;
+            object-fit: cover;
+            border-radius: 999px;
+            box-shadow: 0 12px 60px rgba(3,8,18,0.7);
+            border: 2px solid rgba(255,255,255,0.1);
+            transform: translateZ(30px);
+            display:block;
+        }
+        .hero-photo-spot { display: none; } /* Removed spot for cleaner look */
+        .hero-text { 
+            z-index: 14; 
+            max-width: 550px; /* Prevents text from stretching too far */
+        }
+        .hero-pre { color: #67e8f9; margin-bottom: 1rem; }
+        .hero-name { 
+            display:block; 
+            margin:0 0 8px; 
+            font-size: clamp(3rem, 6vw, 4.5rem); 
+            font-weight: 700; 
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(103, 232, 249, 0.5);
+        }
+        .hero-headline { 
+            margin: 8px 0 32px;
+            font-size: 1.75rem; 
+            color: #e5e7eb;
+            text-shadow: 0 0 15px rgba(229, 231, 235, 0.3);
+        }
+        .btn-primary {
+            display: inline-block;
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 500;
+            padding: 0.85rem 2rem;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+        @media (max-width: 960px) {
+            .hero-grid { grid-template-columns: 1fr; gap: 24px; justify-items:center; text-align:center; }
+            .hero-photo-wrap { width: 240px; height: 240px; }
+            .hero-text { max-width: 100%; }
+        }
 
     </style>
 </head>
-<body class="dark:bg-[#0a0f1c]">
-    
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
+<body class="antialiased">
 
-    <canvas id="bg-canvas"></canvas>
-    
-    <div class="side-element left">
-        <ul>
-            <li><a href="https://github.com/Shally-Katariya" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--accent-cyan)] transition-transform hover:-translate-y-1 block"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><title>GitHub</title><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg></a></li>
-            <li><a href="https://www.linkedin.com/in/shally-katariya-158323297/" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--accent-cyan)] transition-transform hover:-translate-y-1 block"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><title>LinkedIn</title><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a></li>
-        </ul>
-    </div>
-    <div class="side-element right">
-        <ul><li><a href="mailto:shallykatariya10@gmail.com" class="font-mono text-sm tracking-widest hover:text-[var(--accent-cyan)] transition-transform hover:-translate-y-1 block">shallykatariya10@gmail.com</a></li></ul>
-    </div>
+    <canvas id="bg"></canvas>
 
-    <header class="fixed top-0 left-0 right-0 z-50 dark:bg-[#0a0f1c]/80 backdrop-blur-sm shadow-md transition-transform duration-300" id="main-header">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold dark:text-white hover:text-[var(--accent-cyan)] transition">SK</a>
-            <div class="flex items-center">
-                <nav class="hidden md:flex items-center space-x-8 font-mono">
-                    <a href="#about" class="hover:text-[var(--accent-cyan)] transition">About</a>
-                    <a href="#journey" class="hover:text-[var(--accent-cyan)] transition">Journey</a>
-                    <a href="#projects" class="hover:text-[var(--accent-cyan)] transition">Work</a>
-                    <a href="#contact" class="hover:text-[var(--accent-cyan)] transition">Contact</a>
-                </nav>
-                <button id="mobile-menu-button" class="md:hidden ml-8"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
-            </div>
-        </div>
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-             <a href="#about" class="block py-2 text-center">About</a>
-             <a href="#journey" class="block py-2 text-center">Journey</a>
-             <a href="#projects" class="block py-2 text-center">Work</a>
-             <a href="#contact" class="block py-2 text-center">Contact</a>
-        </div>
-    </header>
+    <main class="relative z-10">
 
-    <main class="container mx-auto px-6 pt-24 relative z-10">
-        <section id="about" class="min-h-screen flex items-center hero" data-animate>
-            <div class="max-w-4xl">
+        <!-- Hero Section -->
+        <section id="hero" class="hero-section" aria-label="hero">
+          <div class="hero-content">
+            <div class="hero-grid">
+              <div class="hero-photo-wrap" id="heroPhotoWrap" aria-hidden="false">
+                <!-- IMPORTANT: Please replace this placeholder with a permanent link to your photo -->
+                <img class="hero-photo" id="heroPhoto" src="shally.png" alt="Shally Katariya photo" loading="lazy">
+              </div>
+        
+              <div class="hero-text">
                 <div class="hero-pre">Hi, my name is</div>
                 <h1 class="hero-name">Shally Katariya.</h1>
-                <div class="hero-headline">I design and develop intelligent systems.</div>
-                <p class="hero-desc">I’m a third-year Computer Science student specializing in Artificial Intelligence and Deep Learning. My interests lie in creating AI-driven web applications, experimenting with neural networks, and exploring how deep learning can enhance real-world user experiences.</p>
-                <a href="portfolio.pdf" download="Shally_Katariya_Resume.pdf" class="btn-primary mt-8">Download Resume</a>
+                <h2 class="hero-headline">I turn ideas into AI-driven web experiences.</h2>
+                <a class="btn-primary" href="resume.pdf" download="resume.pdf">Download Resume</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="content-section">
+            <div class="content-container">
+                <h2 class="section-heading">About Me</h2>
+                <p class="main-text">
+                    I’m a Computer Science student who enjoys blending Deep Learning with web technologies to build smart, scalable, and user-friendly applications. My projects reflect my curiosity for AI and its potential to transform how we interact with technology.
+                </p>
             </div>
         </section>
 
-        <section id="journey" class="py-20">
-            <h2 class="text-3xl font-bold mb-12 flex items-center" data-animate><span class="text-[var(--accent-cyan)] font-mono mr-4">01.</span> My Journey <span class="flex-grow h-px bg-gray-700 ml-6"></span></h2>
-            <div class="max-w-4xl mx-auto p-8 rounded-lg" data-animate style="transition-delay: 100ms;">
-                <div class="border-b border-gray-700 mb-8">
-                    <nav class="flex justify-center -mb-px space-x-8"><button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg active" data-tab="experience">Experience</button><button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg" data-tab="education">Education</button><button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg" data-tab="certifications">Certifications</button></nav>
+        <!-- Journey Section (Tabs) -->
+        <section id="journey" class="content-section">
+            <div class="content-container">
+                <h2 class="section-heading">My Journey</h2>
+                <div class="tabs-container">
+                    <button class="tab-button active" data-tab="experience">Experience</button>
+                    <button class="tab-button" data-tab="education">Education</button>
+                    <button class="tab-button" data-tab="certifications">Certifications</button>
                 </div>
-                <div class="tab-content active" id="experience">
-                    <div class="timeline"><div class="timeline-line"></div><div class="timeline-item"><div class="timeline-dot" style="top: 8px;"></div><h4 class="font-bold text-lg text-white">AI & Machine Learning Intern</h4><p class="text-sm text-[var(--accent-cyan)] mb-2">Infosys Springboard — 2023 - Present</p><p class="section-text">Developed SafetyEye, an AI-powered workplace monitoring system. Achieved 87% mAP@0.5 in real-time PPE detection using a fine-tuned YOLOV8 model.</p></div><div class="timeline-item"><div class="timeline-dot" style="top: 8px;"></div><h4 class="font-bold text-lg text-white">Core Developer</h4><p class="text-sm text-[var(--accent-cyan)] mb-2">AEGIS Club, SRMIST — Aug 2023 - Present</p><p class="section-text">Contributed to technical projects within the cybersecurity club. Served on the judging panel for Hyperthon hackathon, evaluating project viability and innovation.</p></div></div>
-                </div>
-                <div class="tab-content" id="education">
-                    <div class="timeline"><div class="timeline-line"></div><div class="timeline-item"><div class="timeline-dot" style="top: 8px;"></div><h4 class="font-bold text-lg text-white">B.Tech in Computer Science</h4><p class="text-sm text-[var(--accent-cyan)] mb-2">SRM Institute of Science and Technology — 2023 - Present</p><p class="section-text">Specialization in Cybersecurity | CGPA: 9.45</p></div><div class="timeline-item"><div class="timeline-dot" style="top: 8px;"></div><h4 class="font-bold text-lg text-white">High School Education</h4><p class="text-sm text-[var(--accent-cyan)] mb-2">St. Mary's Convent Sr. Sec. School — 2008 - 2022</p><p class="section-text">12th Grade: 92.4% | 10th Grade: 92%</p></div></div>
-                </div>
-                <div class="tab-content" id="certifications">
-                    <ul class="space-y-2 list-inside"><li class="flex items-center"><span class="accent-bullet"></span>Prompt Engineering</li><li class="flex items-center"><span class="accent-bullet"></span>Artificial Intelligence Primer Certification</li><li class="flex items-center"><span class="accent-bullet"></span>Principles of Generative AI Certification</li><li class="flex items-center"><span class="accent-bullet"></span>Introduction to Natural Language Processing</li><li class="flex items-center"><span class="accent-bullet"></span>Introduction to Data Science</li><li class="flex items-center"><span class="accent-bullet"></span>Big Data & Machine Learning Bootcamp (CDAC, Noida)</li></ul>
+                <div class="tabs-content-container">
+                    <!-- Experience Content -->
+                    <div id="experience" class="tab-content active">
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="font-bold text-lg text-blue-400">Al & Machine Learning Intern | Infosys Springboard</h3>
+                                <p class="text-sm text-gray-500">2023 - Present</p>
+                                <ul class="list-disc list-inside mt-2 main-text">
+                                    <li>Developed SafetyEye, an Al-powered workplace monitoring system, achieving 87% mAP@0.5 in real-time PPE detection using a fine-tuned YOLOV8 model.</li>
+                                    <li>Engineered a low-latency pipeline to process video streams and issue violation alerts in under 2 seconds.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-blue-400">Core Developer | AEGIS Club, SRMIST</h3>
+                                <p class="text-sm text-gray-500">Aug 2023 - Present</p>
+                                <ul class="list-disc list-inside mt-2 main-text">
+                                    <li>Actively contribute to the development of technical projects and initiatives within the cybersecurity club.</li>
+                                    <li>Served on the first-round shortlisting judging panel for Hyperthon, a hackathon hosted by the AEGIS Club.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Education Content -->
+                    <div id="education" class="tab-content">
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="font-bold text-lg text-blue-400">SRM Institute of Science and Technology</h3>
+                                <p class="text-sm text-gray-500">B.Tech Computer Science | Specialization in Artificial Intelligence & Deep Learning</p>
+                                <p class="mt-2 main-text">CGPA: 9.45</p>
+                            </div>
+                             <div>
+                                <h3 class="font-bold text-lg text-blue-400">St. Mary's Convent Sr. Sec. School</h3>
+                                <p class="text-sm text-gray-500">2008 - 2022</p>
+                                <ul class="list-disc list-inside mt-2 main-text">
+                                    <li>12th Grade: 92.4%</li>
+                                    <li>10th Grade: 92%</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Certifications Content -->
+                    <div id="certifications" class="tab-content">
+                         <ul class="space-y-4 list-disc list-inside main-text">
+                            <li>Infosys Springboard - Prompt Engineering</li>
+                            <li>Infosys Springboard - Principle of Generative AI Certification </li>
+                            <li>Infosys Springboard - Introduction to Data Science</li>
+                            <li>Infosys Springboard - Introduction to Natural Language Processing</li>
+                            <li>Infosys Springboard - Artificial Intelligence Primer Certification</li>
+                            <li>Big Data & Machine Learning Bootcamp (CDAC, Noida)</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="skills" class="py-20">
-            <h2 class="text-3xl font-bold mb-12 flex items-center" data-animate><span class="text-[var(--accent-cyan)] font-mono mr-4">02.</span> My Tech Stack <span class="flex-grow h-px bg-gray-700 ml-6"></span></h2>
-            <div class="max-w-4xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8" data-animate style="transition-delay: 100ms;">
-                <div><h3 class="text-xl font-bold text-white mb-4 text-center md:text-left">Languages</h3><ul class="space-y-2 font-mono text-sm"><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> C & C++</li><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> Python</li><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> JavaScript (ES6+)</li><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> HTML5 & CSS3</li></ul></div>
-                <div><h3 class="text-xl font-bold text-white mb-4 text-center md:text-left">Frameworks & Libraries</h3><ul class="space-y-2 font-mono text-sm"><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> TensorFlow, Keras, PyTorch</li><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> Scikit-learn & Hugging Face</li><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> React</li><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> FastAPI & Flask</li></ul></div>
-                <div><h3 class="text-xl font-bold text-white mb-4 text-center md:text-left">Databases & Tools</h3><ul class="space-y-2 font-mono text-sm"><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> PostgreSQL & Firebase</li><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> Pandas, Matplotlib, SciPy</li><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> Hadoop, Hive, Spark</li><li class="flex items-center"><span class="text-[var(--accent-cyan)] mr-2">▹</span> Git & Docker</li></ul></div>
+        <!-- Technical Skills Section -->
+        <section id="skills" class="content-section">
+            <div class="content-container">
+                <h2 class="section-heading">Technical Skills</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10 text-left">
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-400 mb-3">Programming & Web</h3>
+                        <div class="flex flex-wrap gap-2">
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">C</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">C++</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Python</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">HTML/CSS</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">JavaScript</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">React</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Flask</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">FastAPI</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Firebase</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">PostgreSQL</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-400 mb-3">ML & Data Science</h3>
+                        <div class="flex flex-wrap gap-2">
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">TensorFlow</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Keras</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">PyTorch</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Scikit-learn</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Hugging Face</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Pandas</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Matplotlib</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-400 mb-3">Tools & DevOps</h3>
+                        <div class="flex flex-wrap gap-2">
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Git</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Docker</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Hadoop</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Hive</span>
+                           <span class="tag text-xs font-semibold py-1 px-3 rounded-full">Spark</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section id="projects" class="py-20">
-            <h2 class="text-3xl font-bold mb-12 flex items-center" data-animate><span class="text-[var(--accent-cyan)] font-mono mr-4">03.</span> Some Things I’ve Built <span class="flex-grow h-px bg-gray-700 ml-6"></span></h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <article class="project-card" data-animate><h3 class="project-title">Peer-to-Peer Payment App</h3><div class="project-meta">Python · FastAPI · PostgreSQL · React</div><p class="section-text">A secure payment platform for P2P money transfers with JWT-based authentication and real-time fraud prevention.</p><a href="https://github.com/Shally-Katariya/Peer-to-Peer-Payment-App" target="_blank" rel="noopener noreferrer" class="inline-block mt-3">View on GitHub &rarr;</a></article>
-                <article class="project-card" data-animate style="transition-delay: 100ms;"><h3 class="project-title">Multilingual CTI Platform</h3><div class="project-meta">Python · Hugging Face · Flask · React</div><p class="section-text">A Cyber Threat Intelligence platform classifying malicious IOCs from Telegram with 95% accuracy using a fine-tuned XLM-ROBERTa model.</p><a href="https://github.com/Shally-Katariya/Multilingual-Cyber-Threat-Intelligence-CTI-Platform" target="_blank" rel="noopener noreferrer" class="inline-block mt-3">View on GitHub &rarr;</a></article>
-                <article class="project-card" data-animate style="transition-delay: 200ms;"><h3 class="project-title">SafetyEye: Workplace Monitoring</h3><div class="project-meta">Python · YOLOv8 · OpenCV</div><p class="section-text">An AI system for real-time PPE detection in workplace video streams using a fine-tuned YOLOV8 model.</p><a href="https://github.com/vinayykkumar/SafetyEye-AI-Powered-Workplace-Occupancy-Safety-Monitor_Infosys_internship-Aug-2025/tree/Shally_Katariya" target="_blank" rel="noopener noreferrer" class="inline-block mt-3">View on GitHub &rarr;</a></article>
-                <article class="project-card" data-animate style="transition-delay: 300ms;"><h3 class="project-title">Handwritten Digit Recognition</h3><div class="project-meta">Python · TensorFlow · Keras</div><p class="section-text">A deep learning model to recognize and classify handwritten digits from the MNIST dataset with high accuracy.</p><a href="https://github.com/Shally-Katariya/Digital-Recognition" target="_blank" rel="noopener noreferrer" class="inline-block mt-3">View on GitHub &rarr;</a></article>
+
+        <!-- Projects Section -->
+        <section id="projects" class="content-section">
+            <div class="content-container">
+                <h2 class="section-heading">Featured Projects</h2>
+                <div class="space-y-8 text-left">
+                    <div class="project-item group">
+                        <h3 class="text-xl font-bold text-blue-400 mb-2">Peer-to-Peer Payment App</h3>
+                        <p class="main-text">Built a secure payment platform enabling peer-to-peer money transfers with JWT-based authentication and role-based access control. The system supports transaction classification and integrates fraud-prevention features.</p>
+                        <p class="text-sm text-gray-500 mt-2">Technologies: Python, FastAPI, PostgreSQL, SQLAlchemy, JWT, React</p>
+                    </div>
+                    <div class="project-item group">
+                        <h3 class="text-xl font-bold text-blue-400 mb-2">Multilingual Cyber Threat Intelligence (CTI) Platform</h3>
+                        <p class="main-text">In a team, built a CTI platform that achieved 95% accuracy in classifying malicious IOCs from Telegram using a fine-tuned XLM-ROBERTa model. Features a Flask/React dashboard and real-time translation for 100+ languages.</p>
+                         <p class="text-sm text-gray-500 mt-2">Technologies: Python, Hugging Face Transformers, XLM-ROBERTa, Flask, React</p>
+                    </div>
+                    <div class="project-item group">
+                        <h3 class="text-xl font-bold text-blue-400 mb-2">SafetyEye: AI-Powered Workplace Monitoring</h3>
+                        <p class="main-text">Developed an AI-powered system achieving 87% mAP@0.5 in real-time PPE detection using a fine-tuned YOLOV8 model. Engineered a low-latency pipeline to process video streams and issue violation alerts in under 2 seconds.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section id="contact" class="contact" data-animate>
-            <h2 class="font-mono text-2xl text-[var(--accent-cyan)]">04. What's Next?</h2>
-            <h2>Get In Touch</h2>
-            <p>I'm currently seeking new opportunities and would love to hear from you. My inbox is always open. Feel free to reach out via email, or just say hello!</p>
-            <a href="mailto:shallykatariya10@gmail.com" class="btn-primary mt-6">Say Hello</a>
+        <!-- Contact Section -->
+        <section id="contact" class="content-section text-center">
+            <div class="content-container">
+                <h2 class="section-heading">Get In Touch</h2>
+                <p class="main-text mb-8">I'm currently seeking new opportunities and collaborations. If you have a project in mind or just want to connect, feel free to reach out!</p>
+                <a href="mailto:katariyashally11@gmail.com" class="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-colors duration-300">
+                    Contact Me
+                </a>
+                <div class="flex justify-center space-x-6 mt-8">
+                    <a href="https://www.linkedin.com/in/shally-katariya-158323297/" target="_blank" class="text-gray-400 hover:text-cyan-300 transition-colors">LinkedIn</a>
+                    <a href="https://github.com/Shally-Katariya" target="_blank" class="text-gray-400 hover:text-cyan-300 transition-colors">GitHub</a>
+                </div>
+            </div>
         </section>
     </main>
-    
-    <footer class="text-center py-8 relative z-10 font-mono text-sm text-gray-500">
-        <p>Designed & Built by Shally Katariya & AI</p>
-    </footer>
 
-    <script>
-        // Custom Cursor
-        const cursorDot = document.querySelector(".cursor-dot");
-        const cursorOutline = document.querySelector(".cursor-outline");
-        window.addEventListener("mousemove", e => {
-            cursorDot.style.left = `${e.clientX}px`;
-            cursorDot.style.top = `${e.clientY}px`;
-            cursorOutline.animate({ left: `${e.clientX - 20}px`, top: `${e.clientY - 20}px` }, { duration: 500, fill: "forwards" });
+    <script type="module">
+        import * as THREE from 'https://cdn.skypack.dev/three@0.132.2';
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.querySelector('#bg'),
+            alpha: true
+        });
+
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.position.setZ(30);
+
+        // Lights
+        const pointLight = new THREE.PointLight(0x00aaff, 1.2, 200);
+        pointLight.position.set(5, 5, 5);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+        scene.add(pointLight, ambientLight);
+
+        // Main 3D Object - Torus Knot
+        const geometry = new THREE.TorusKnotGeometry(10, 2, 160, 16); // Simplified geometry
+        const material = new THREE.MeshStandardMaterial({ 
+            color: 0x2563eb, 
+            wireframe: true,
+        });
+        const torusKnot = new THREE.Mesh(geometry, material);
+        scene.add(torusKnot);
+
+        // Particle System
+        const particlesGeometry = new THREE.BufferGeometry;
+        const particlesCount = 3000; // Fewer particles
+        const posArray = new Float32Array(particlesCount * 3);
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 500;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({ size: 0.04, color: 0x888888 }); // Smaller
+        const particleMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particleMesh);
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
         });
         
-        // Background Animation (simplified for brevity)
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height, particles;
-        function init() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            particles = [];
-            for (let i = 0; i < 100; i++) {
-                particles.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5,
-                    radius: Math.random() * 1.5
-                });
+        // Scroll animation logic
+        const color1 = new THREE.Color(0x2563eb); // Blue
+        const color2 = new THREE.Color(0x37ccff); // Cyan
+        const color3 = new THREE.Color(0x8b5cf6); // Violet
+        const color4 = new THREE.Color(0xec4899); // Pink
+
+        function moveCamera() {
+            const t = document.body.getBoundingClientRect().top;
+            
+            torusKnot.rotation.x += 0.0005; // Slower rotation
+            torusKnot.rotation.y += 0.0025;
+            torusKnot.rotation.z += 0.0005;
+
+            camera.position.z = 30 + t * -0.01;
+            camera.position.x = t * -0.0002;
+            camera.position.y = t * -0.0002;
+
+            const scrollMax = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollFrac = -t / scrollMax;
+
+            if (scrollFrac < 0.25) {
+                torusKnot.material.color.lerpColors(color1, color2, scrollFrac / 0.25);
+            } else if (scrollFrac < 0.5) {
+                torusKnot.material.color.lerpColors(color2, color3, (scrollFrac - 0.25) / 0.25);
+            } else if (scrollFrac < 0.75) {
+                torusKnot.material.color.lerpColors(color3, color4, (scrollFrac - 0.5) / 0.25);
+            } else {
+                torusKnot.material.color.lerpColors(color4, color1, (scrollFrac - 0.75) / 0.25);
             }
         }
+        document.body.onscroll = moveCamera;
+        moveCamera();
+
+        // Animation loop
+        const clock = new THREE.Clock();
         function animate() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = 'rgba(148, 163, 184, 0.2)';
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0 || p.x > width) p.vx *= -1;
-                if (p.y < 0 || p.y > height) p.vy *= -1;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fill();
-            });
             requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+            particleMesh.rotation.y = elapsedTime * 0.03; // Slower particle rotation
+            renderer.render(scene, camera);
         }
-        init();
         animate();
-        window.addEventListener('resize', init);
 
-
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', () => {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        });
-        
-        // Entrance animations on scroll
-        const observer = new IntersectionObserver((entries) => {
+        // Intersection Observer for fade-in effect
+        const sections = document.querySelectorAll('.content-section, .hero-section');
+        const options = {
+            root: null,
+            threshold: 0.2,
+            rootMargin: "0px"
+        };
+        const observer = new IntersectionObserver(function(entries, observer) {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+        }, options);
+        sections.forEach(section => {
+            observer.observe(section);
+        });
 
-        // Journey tabs
+        // Tab functionality
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
+
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
+                const tabId = button.dataset.tab;
+
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
-                const tabId = button.dataset.tab;
+
                 tabContents.forEach(content => {
-                    content.id === tabId ? content.classList.add('active') : content.classList.remove('active');
+                    content.classList.remove('active');
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    }
                 });
             });
         });
 
-        // Hide header on scroll down
-        let lastScrollTop = 0;
-        const header = document.getElementById('main-header');
-        window.addEventListener("scroll", function() {
-           let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-           header.style.transform = (scrollTop > lastScrollTop && scrollTop > 100) ? "translateY(-100%)" : "translateY(0)";
-           lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-        });
+    </script>
+    <script>
+      (function(){
+        const wrap = document.getElementById('heroPhotoWrap');
+        const photo = document.getElementById('heroPhoto');
+        if (!wrap || !photo) return;
+
+        let targetX = 0, targetY = 0;
+        let currentX = 0, currentY = 0;
+
+        const strength = 12;
+        const depth = 28;
+
+        window.addEventListener('mousemove', e => {
+          const x = (e.clientX / window.innerWidth) - 0.5;
+          const y = (e.clientY / window.innerHeight) - 0.5;
+          targetX = -x * strength;
+          targetY = -y * (strength * 0.6);
+        }, {passive:true});
+
+        let lastScroll = window.scrollY;
+        window.addEventListener('scroll', () => {
+          const s = window.scrollY;
+          targetY += (s - lastScroll) * -0.002;
+          lastScroll = s;
+        }, {passive:true});
+
+        wrap.addEventListener('mouseenter', ()=> wrap.style.transition = 'transform 180ms cubic-bezier(.2,.9,.2,1)');
+        wrap.addEventListener('mouseleave', ()=> wrap.style.transition = 'transform 380ms cubic-bezier(.2,.9,.2,1)');
+
+        function animate(){
+          currentX += (targetX - currentX) * 0.08;
+          currentY += (targetY - currentY) * 0.08;
+          wrap.style.transform = `translate3d(${currentX}px, ${currentY}px, ${depth}px) rotateX(${currentY*0.06}deg) rotateY(${currentX*0.04}deg)`;
+          photo.style.transform = `translateZ(${depth*0.15}px) rotateY(${currentX*0.02}deg) rotateX(${currentY*0.01}deg)`;
+          requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          wrap.style.transform = 'none';
+          photo.style.transform = 'none';
+        }
+      })();
     </script>
 </body>
 </html>
